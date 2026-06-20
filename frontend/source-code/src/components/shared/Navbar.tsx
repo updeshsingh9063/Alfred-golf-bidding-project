@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { useAuth } from "../../lib/auth";
 
 const navLinks = [
   { label: "How It Works", href: "/how-it-works" },
@@ -13,6 +14,7 @@ const navLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { isAuthenticated, role, logout } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -47,18 +49,46 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <Link
-            to="/login"
-            className="text-base font-medium text-ink-soft transition-colors hover:text-ink"
-          >
-            Login
-          </Link>
-          <Link
-            to="/login?mode=signup"
-            className="rounded-[999px] bg-accent-deep px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-accent-deep-hov"
-          >
-            Sign Up
-          </Link>
+          {!isAuthenticated ? (
+            <>
+              <Link
+                to="/login"
+                className="text-base font-medium text-ink-soft transition-colors hover:text-ink"
+              >
+                Login
+              </Link>
+              <Link
+                to="/login?mode=signup"
+                className="rounded-[999px] bg-accent-deep px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-accent-deep-hov"
+              >
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              {role === 'admin' ? (
+                <Link
+                  to="/admin"
+                  className="rounded-[999px] bg-ink px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-ink-soft"
+                >
+                  Admin Console
+                </Link>
+              ) : (
+                <Link
+                  to="/dashboard"
+                  className="rounded-[999px] bg-accent-deep px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-accent-deep-hov"
+                >
+                  User Dashboard
+                </Link>
+              )}
+              <button
+                onClick={logout}
+                className="text-base font-medium text-ink-soft transition-colors hover:text-ink ml-2"
+              >
+                Log out
+              </button>
+            </>
+          )}
         </div>
 
         <button
@@ -84,20 +114,43 @@ export function Navbar() {
               </Link>
             ))}
             <hr className="border-border" />
-            <Link
-              to="/login"
-              className="text-sm font-medium text-ink-soft"
-              onClick={() => setMobileOpen(false)}
-            >
-              Login
-            </Link>
-            <Link
-              to="/login?mode=signup"
-              className="inline-flex w-fit rounded-[999px] bg-accent-deep px-4 py-2 text-sm font-medium text-white"
-              onClick={() => setMobileOpen(false)}
-            >
-              Sign Up
-            </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/login"
+                  className="text-sm font-medium text-ink-soft"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/login?mode=signup"
+                  className="inline-flex w-fit rounded-[999px] bg-accent-deep px-4 py-2 text-sm font-medium text-white"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to={role === 'admin' ? "/admin" : "/dashboard"}
+                  className="inline-flex w-fit rounded-[999px] bg-accent-deep px-4 py-2 text-sm font-medium text-white"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {role === 'admin' ? "Admin Console" : "User Dashboard"}
+                </Link>
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileOpen(false);
+                  }}
+                  className="text-left text-sm font-medium text-ink-soft"
+                >
+                  Log out
+                </button>
+              </>
+            )}
           </nav>
         </div>
       )}

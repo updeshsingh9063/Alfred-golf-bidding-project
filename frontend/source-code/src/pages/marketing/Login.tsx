@@ -10,7 +10,7 @@ export default function Login() {
   const location = useLocation();
   const { login, register } = useAuth();
   
-  const from = location.state?.from || '/dashboard';
+  const from = location.state?.from || '/';
   const message = location.state?.message;
 
   // Check if URL has ?mode=signup parameter
