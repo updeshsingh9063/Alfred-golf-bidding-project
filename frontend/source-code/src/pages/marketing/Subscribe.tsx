@@ -9,7 +9,6 @@ export default function Subscribe() {
   const navigate = useNavigate();
   const { user, refreshUser } = useAuth();
   
-  const [plans, setPlans] = useState<any[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string>('monthly');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -21,18 +20,6 @@ export default function Subscribe() {
       navigate('/dashboard');
       return;
     }
-
-    const loadPlans = async () => {
-      try {
-        const data = await fetchApi('/subscriptions/plans');
-        if (data.success) {
-          setPlans(data.data.plans);
-        }
-      } catch (err) {
-        console.error('Failed to load plans', err);
-      }
-    };
-    loadPlans();
   }, [user, navigate]);
 
   const handleSubscribe = async (e: React.FormEvent) => {

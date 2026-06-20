@@ -7,7 +7,8 @@ interface EmptyStateProps {
   description: string;
   action?: {
     label: string;
-    href: string;
+    href?: string;
+    onClick?: () => void;
   };
 }
 
@@ -21,13 +22,21 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
         {title}
       </h3>
       <p className="mt-1 max-w-sm text-sm text-ink-soft">{description}</p>
-      {action && (
+      {action && action.href && (
         <Link
           to={action.href}
           className="mt-5 inline-flex rounded-[999px] bg-accent-deep px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-deep-hov"
         >
           {action.label}
         </Link>
+      )}
+      {action && action.onClick && (
+        <button
+          onClick={action.onClick}
+          className="mt-5 inline-flex rounded-[999px] bg-accent-deep px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-deep-hov"
+        >
+          {action.label}
+        </button>
       )}
     </div>
   );

@@ -135,7 +135,6 @@ export default function Charities() {
                       charity={{
                         id: c._id,
                         name: c.name,
-                        description: c.description || "",
                         shortDescription: c.shortDescription || c.description?.slice(0, 80) || "",
                         category: c.category || "General",
                         region: c.region || "Global",

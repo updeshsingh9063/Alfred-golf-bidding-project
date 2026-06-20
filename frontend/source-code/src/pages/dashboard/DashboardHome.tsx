@@ -45,7 +45,7 @@ export default function DashboardHome() {
   const currentMonthScores = scores.filter((s: any) => s.date.startsWith(currentMonth));
   
   const pendingWin = winnings.recent.find((r: any) => r.status === "pending" && r.prize > 0);
-  const paidWins = winnings.recent.filter((r: any) => r.status === "paid" && r.prize > 0);
+
   const totalDonated = ((subscription?.amount || 0) * (user.charityPercent || 0) / 100) * 7; // Mock 7 months
 
   return (

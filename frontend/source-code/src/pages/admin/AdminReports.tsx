@@ -52,15 +52,15 @@ export default function AdminReports() {
   const monthlyPrizePool: any[] = [];
 
   // Derive category totals from charities
-  const charities = charitiesData?.charities || [];
-  const categoryTotals = charities.reduce<Record<string, number>>(
+  const charities: any[] = charitiesData?.charities || [];
+  const categoryTotals = charities.reduce(
     (acc: Record<string, number>, c: any) => {
       const category = c.category || "General";
       const raised = c.totalRaised || 0;
       acc[category] = (acc[category] || 0) + raised;
       return acc;
     },
-    {},
+    {} as Record<string, number>,
   );
 
   const charityDistribution = Object.entries(categoryTotals).map(

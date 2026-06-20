@@ -43,7 +43,7 @@ export default function Login() {
       if (mode === 'login') {
         const success = await login(email, password);
         if (success) {
-          const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+
           // The user is also available via fetchApi, but since login doesn't return user, we wait for auth context
           // Since the auth context does setUser, we can just redirect.
           // Wait, login sets local storage. Let's just go to dashboard and let ProtectedRoute handle it.

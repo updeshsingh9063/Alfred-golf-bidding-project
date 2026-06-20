@@ -7,7 +7,6 @@ import {
   HandCoins,
   Play,
   CheckCircle2,
-  AlertTriangle,
 } from "lucide-react";
 import { SidebarNav } from "../../components/shared/SidebarNav";
 import { StatusPill } from "../../components/shared/StatusPill";

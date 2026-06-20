@@ -49,7 +49,7 @@ export default function MyCharity() {
   const charity = user.charityId;
 
   const monthlyAmount = subscription?.amount ? subscription.amount / 100 : 25; // Default £25 if not subscribed yet
-  const charityAmount = (monthlyAmount * percent) / 100;
+
   const totalDonated = ((subscription?.amount || 0) * (user.charityPercent || 0) / 100 / 100) * 7; // Mock 7 months for now
 
   const handlePercentChange = async (newPercent: number) => {
