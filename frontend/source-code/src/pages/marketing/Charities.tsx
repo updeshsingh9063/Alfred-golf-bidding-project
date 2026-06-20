@@ -137,7 +137,6 @@ export default function Charities() {
                         name: c.name,
                         shortDescription: c.shortDescription || c.description?.slice(0, 80) || "",
                         category: c.category || "General",
-                        region: c.region || "Global",
                         imageUrl: c.imageUrl || "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&q=80",
                         totalRaised: (c.totalRaised || 0) / 100,
                         isSpotlight: c.isFeatured || false
