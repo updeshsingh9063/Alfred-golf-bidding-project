@@ -11,6 +11,7 @@ import {
 import { SidebarNav } from "../../components/shared/SidebarNav";
 import { StatusPill } from "../../components/shared/StatusPill";
 import { useAdminDraws } from "../../lib/hooks";
+import { fetchApi } from "../../lib/api";
 
 const adminItems = [
   { label: "Overview", href: "/admin", icon: <BarChart3 size={16} /> },
@@ -22,21 +23,22 @@ const adminItems = [
 ];
 
 export default function AdminDraws() {
-  const { data, loading } = useAdminDraws(1, 50);
-  const [algorithm, setAlgorithm] = useState<"random" | "weighted">("random");
+  const { data, loading, refetch } = useAdminDraws(1, 50);
+  const [algorithm, setAlgorithm] = useState<"random" | "algorithmic">("random");
   const [showSimulation, setShowSimulation] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [published, setPublished] = useState(false);
-
-  const simulatedNumbers = [17, 33, 8, 41, 26];
+  const [simulatedNumbers, setSimulatedNumbers] = useState<number[]>([]);
+  const [simulating, setSimulating] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [publishSuccess, setPublishSuccess] = useState(false);
 
   if (loading) {
     return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
   }
 
   const draws = data?.draws || [];
-  const currentDraw = draws.find((d: any) => d.status === "upcoming" || d.status === "active");
-  const pastDraws = draws.filter((d: any) => d.status === "completed");
+  const currentDraw = draws.find((d: any) => d.status === "upcoming" || d.status === "simulated" || d.status === "in_progress");
+  const pastDraws = draws.filter((d: any) => d.status === "published");
 
   return (
     <div className="flex min-h-screen bg-bg">
@@ -108,11 +110,27 @@ export default function AdminDraws() {
 
               <div className="mt-6 flex gap-3 border-t border-border pt-5">
                 <button
-                  onClick={() => setShowSimulation(!showSimulation)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-surface-sunken"
+                  disabled={simulating}
+                  onClick={async () => {
+                    if (!currentDraw) return;
+                    setSimulating(true);
+                    try {
+                      const res = await fetchApi(`/admin/draws/${currentDraw._id}/simulate`, {
+                        method: 'POST',
+                        body: JSON.stringify({ method: algorithm })
+                      });
+                      if (res.success && res.data?.draw?.winningNumbers) {
+                        setSimulatedNumbers(res.data.draw.winningNumbers);
+                      }
+                      setShowSimulation(true);
+                      refetch();
+                    } catch(e) { console.error(e); }
+                    finally { setSimulating(false); }
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-surface-sunken disabled:opacity-50"
                 >
                   <Play size={14} />
-                  Run simulation
+                  {simulating ? 'Simulating...' : 'Run simulation'}
                 </button>
                 <button
                   onClick={() => setShowConfirm(true)}
@@ -154,11 +172,11 @@ export default function AdminDraws() {
             </div>
           )}
 
-          {published && (
+          {publishSuccess && (
             <div className="mt-4 rounded-lg border border-success/30 bg-success/5 p-4 text-center">
               <CheckCircle2 size={16} className="mx-auto text-success" />
               <p className="mt-1 text-sm font-medium text-success">
-                Results published successfully.
+                Results published successfully. Winners have been notified.
               </p>
             </div>
           )}
@@ -208,9 +226,9 @@ export default function AdminDraws() {
                   {/* Tiers placeholder - logic needs to map actual winners based on match count */}
                   <div className="mt-3 grid grid-cols-3 gap-2">
                     {[
-                      { matches: 5, prize: (draw.prizePool * 0.5) / 100, winners: 0 },
-                      { matches: 4, prize: (draw.prizePool * 0.3) / 100, winners: 0 },
-                      { matches: 3, prize: (draw.prizePool * 0.2) / 100, winners: 0 },
+                      { matches: 5, poolPct: 0.40, winners: draw.winners?.tier5?.count || 0, prizeEach: draw.winners?.tier5?.prizeEach || 0 },
+                      { matches: 4, poolPct: 0.35, winners: draw.winners?.tier4?.count || 0, prizeEach: draw.winners?.tier4?.prizeEach || 0 },
+                      { matches: 3, poolPct: 0.25, winners: draw.winners?.tier3?.count || 0, prizeEach: draw.winners?.tier3?.prizeEach || 0 },
                     ].map((tier) => (
                       <div
                         key={tier.matches}
@@ -220,7 +238,7 @@ export default function AdminDraws() {
                           Match {tier.matches}
                         </p>
                         <p className="font-mono text-xs font-bold text-ink">
-                          £{tier.prize.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                          {tier.prizeEach > 0 ? `£${(tier.prizeEach / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '—'}
                         </p>
                         <p className="text-[10px] text-ink-soft">
                           {tier.winners} winner{tier.winners !== 1 ? "s" : ""}
@@ -245,7 +263,7 @@ export default function AdminDraws() {
               Publish results?
             </h3>
             <p className="mt-2 text-sm text-ink-soft">
-              This will finalise the winning numbers for {currentDraw.name} and
+              This will finalise the winning numbers for {currentDraw?.name} and
               notify all participants. This action cannot be undone.
             </p>
             <div className="mt-5 flex justify-end gap-2">
@@ -256,13 +274,25 @@ export default function AdminDraws() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  setShowConfirm(false);
-                  setPublished(true);
+                disabled={publishing}
+                onClick={async () => {
+                  if (!currentDraw) return;
+                  setPublishing(true);
+                  try {
+                    await fetchApi(`/admin/draws/${currentDraw._id}/publish`, {
+                      method: 'POST',
+                      body: JSON.stringify({ method: algorithm })
+                    });
+                    setShowConfirm(false);
+                    setPublishSuccess(true);
+                    setTimeout(() => setPublishSuccess(false), 5000);
+                    refetch();
+                  } catch(e) { console.error(e); }
+                  finally { setPublishing(false); }
                 }}
-                className="rounded-lg bg-accent-deep px-4 py-2 text-sm font-medium text-white hover:bg-accent-deep-hov"
+                className="rounded-lg bg-accent-deep px-4 py-2 text-sm font-medium text-white hover:bg-accent-deep-hov disabled:opacity-50"
               >
-                Publish
+                {publishing ? 'Publishing...' : 'Publish'}
               </button>
             </div>
           </div>

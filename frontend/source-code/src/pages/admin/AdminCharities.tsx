@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { SidebarNav } from "../../components/shared/SidebarNav";
 import { AdminDataTable } from "../../components/shared/AdminDataTable";
-import { useCharities } from "../../lib/hooks";
+import { useAdminCharities } from "../../lib/hooks";
 import { fetchApi } from "../../lib/api";
 
 const adminItems = [
@@ -26,7 +26,7 @@ const adminItems = [
 ];
 
 export default function AdminCharities() {
-  const { data, loading, refetch } = useCharities();
+  const { data, loading, refetch } = useAdminCharities();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
