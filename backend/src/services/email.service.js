@@ -20,7 +20,7 @@ const getTransporter = () => {
 const sendEmail = async ({ to, subject, html, text }) => {
   try {
     const info = await getTransporter().sendMail({
-      from: process.env.EMAIL_FROM || 'Alfred Golf <noreply@alfredgolf.com>',
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER || 'Alfred Golf <noreply@alfredgolf.com>',
       to,
       subject,
       html,
