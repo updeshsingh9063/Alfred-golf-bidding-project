@@ -1,4 +1,8 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
+
+// Force IPv4 for Render to prevent ENETUNREACH IPv6 errors when sending emails
+dns.setDefaultResultOrder('ipv4first');
 
 let transporter;
 

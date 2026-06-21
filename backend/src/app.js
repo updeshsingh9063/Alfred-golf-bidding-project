@@ -20,6 +20,9 @@ const { notFound } = require('./middleware/notFound.middleware');
 
 const app = express();
 
+// Trust proxy for rate limiting on Render/Heroku
+app.set('trust proxy', 1);
+
 // ── Security headers ──────────────────────────────────────────────────────────
 app.use(helmet());
 
