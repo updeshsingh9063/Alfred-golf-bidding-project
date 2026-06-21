@@ -70,7 +70,6 @@ export default function AdminUsers() {
 
   async function saveScores() {
     if (!selectedId) return;
-    setSaving(true);
     try {
       for (const val of scoreValues) {
         if (!val) continue;
@@ -84,8 +83,6 @@ export default function AdminUsers() {
       setScoreValues([]);
     } catch (err) {
       console.error('Failed to save scores', err);
-    } finally {
-      setSaving(false);
     }
   }
 
