@@ -123,6 +123,10 @@ exports.getAllUsers = async (req, res, next) => {
       User.countDocuments(query),
     ]);
 
+    for (const user of users) {
+      user.scoresCount = await Score.countDocuments({ userId: user._id, isDeleted: false });
+    }
+
     res.json({
       success: true,
       data: {
