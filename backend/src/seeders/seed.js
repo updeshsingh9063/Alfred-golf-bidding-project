@@ -22,7 +22,7 @@ const charities = [
   {
     name: 'Ocean Conservancy Trust',
     slug: 'ocean-conservancy-trust',
-    imageUrl: 'https://images.unsplash.com/photo-1583212272226-b7c5e687c1b6?w=800&q=80&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef?w=800&q=80&auto=format&fit=crop',
     description: 'We protect the ocean by cleaning coastlines, fighting plastic pollution, and advocating for marine life. Every contribution goes directly toward beach clean-ups, education programmes, and lobbying for cleaner seas.',
     shortDescription: 'Protecting our oceans one beach at a time.',
     category: 'environment',
@@ -44,7 +44,7 @@ const charities = [
   {
     name: 'Youth Links Foundation',
     slug: 'youth-links-foundation',
-    imageUrl: 'https://images.unsplash.com/photo-1529390079861-591de45a3b09?w=800&q=80&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=800&q=80&auto=format&fit=crop',
     description: 'Youth Links Foundation brings golf into underserved communities, providing equipment, coaching, and mental health support to young people aged 8–18. We believe sport changes lives.',
     shortDescription: 'Bringing golf to young people everywhere.',
     category: 'youth',
