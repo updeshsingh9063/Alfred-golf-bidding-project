@@ -36,7 +36,6 @@ export default function AdminUsers() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editingScores, setEditingScores] = useState(false);
   const [scoreValues, setScoreValues] = useState<string[]>([]);
-  const [saving, setSaving] = useState(false);
   const { data, loading, refetch } = useAdminUsers(1, 100);
 
   if (loading) {

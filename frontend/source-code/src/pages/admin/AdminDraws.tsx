@@ -87,7 +87,7 @@ export default function AdminDraws() {
                   Draw algorithm
                 </h3>
                 <div className="mt-3 flex gap-3">
-                  {(["random", "weighted"] as const).map((mode) => (
+                  {(["random", "algorithmic"] as const).map((mode) => (
                     <button
                       key={mode}
                       onClick={() => setAlgorithm(mode)}
