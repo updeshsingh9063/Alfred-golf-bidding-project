@@ -15,8 +15,8 @@ router.patch('/profile', userController.updateProfile);
 // PATCH /api/users/charity
 router.patch('/charity', userController.updateCharity);
 
-// GET /api/users/dashboard (requires active subscription)
-router.get('/dashboard', requireSubscription, userController.getDashboard);
+// GET /api/users/dashboard (requires login only)
+router.get('/dashboard', userController.getDashboard);
 
 // GET /api/users/winnings
 router.get('/winnings', userController.getWinnings);
