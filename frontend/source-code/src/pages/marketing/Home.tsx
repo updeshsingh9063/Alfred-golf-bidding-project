@@ -4,7 +4,8 @@ import { ArrowRight, Shield, Eye, Heart, CreditCard, ChevronRight, Quote } from 
 import { Navbar } from '../../components/shared/Navbar';
 import { Footer } from '../../components/shared/Footer';
 import { TicketCard } from '../../components/shared/TicketCard';
-import { mockRecentWinners, mockCharities } from '../../lib/mock-data';
+import { mockRecentWinners } from '../../lib/mock-data';
+import { useFetch } from '../../lib/hooks';
 
 const acts = [
   {
@@ -37,10 +38,10 @@ const trustPoints = [
   { icon: CreditCard, label: 'Secure payments via Stripe' },
 ];
 
-const spotlight = mockCharities.find((c) => c.isSpotlight)!;
-
 export default function Home() {
   const navigate = useNavigate();
+  const { data: featuredData } = useFetch<any>('/charities/featured');
+  const spotlight = featuredData?.charity;
 
   return (
     <div className="min-h-screen bg-bg">
@@ -192,7 +193,8 @@ export default function Home() {
       </section>
 
       {/* Charity Spotlight */}
-      <section className="border-t border-border">
+      {spotlight && (
+        <section className="border-t border-border">
         <div className="mx-auto grid max-w-[1800px] items-center gap-10 px-5 py-16 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-24">
           <div className="overflow-hidden rounded-[var(--radius-card)] bg-surface-sunken">
             <video
@@ -224,7 +226,7 @@ export default function Home() {
               {spotlight.description}
             </p>
             <Link
-              to={`/charities/${spotlight.id}`}
+              to={`/charities/${spotlight._id || spotlight.id}`}
               className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent-deep transition-colors hover:text-accent-deep-hov"
             >
               Learn more about this charity
@@ -233,6 +235,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Trust Strip */}
       <section className="border-t border-border bg-surface">
