@@ -14,6 +14,7 @@ import { SidebarNav } from "../../components/shared/SidebarNav";
 import { AdminDataTable } from "../../components/shared/AdminDataTable";
 import { StatusPill } from "../../components/shared/StatusPill";
 import { useAdminUsers } from "../../lib/hooks";
+import { fetchApi } from "../../lib/api";
 
 const adminItems = [
   { label: "Overview", href: "/admin", icon: <BarChart3 size={16} /> },
@@ -35,7 +36,8 @@ export default function AdminUsers() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editingScores, setEditingScores] = useState(false);
   const [scoreValues, setScoreValues] = useState<string[]>([]);
-  const { data, loading } = useAdminUsers(1, 100);
+  const [saving, setSaving] = useState(false);
+  const { data, loading, refetch } = useAdminUsers(1, 100);
 
   if (loading) {
     return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
@@ -67,14 +69,37 @@ export default function AdminUsers() {
     setScoreValues(Array(5).fill(""));
   }
 
-  function saveScores() {
-    setEditingScores(false);
-    setScoreValues([]);
+  async function saveScores() {
+    if (!selectedId) return;
+    setSaving(true);
+    try {
+      for (const val of scoreValues) {
+        if (!val) continue;
+        // Create new score for the user via admin endpoint
+        await fetchApi(`/admin/users/${selectedId}/scores`, {
+          method: 'POST',
+          body: JSON.stringify({ score: Number(val), date: new Date().toISOString().split('T')[0] }),
+        });
+      }
+      setEditingScores(false);
+      setScoreValues([]);
+    } catch (err) {
+      console.error('Failed to save scores', err);
+    } finally {
+      setSaving(false);
+    }
   }
 
-  function handleStatusChange(newStatus: string) {
-    // Mock status change
-    console.log("Status changed to:", newStatus);
+  async function handleStatusChange(userId: string, newStatus: string) {
+    try {
+      await fetchApi(`/admin/users/${userId}/subscription`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: newStatus }),
+      });
+      refetch();
+    } catch (err) {
+      console.error('Failed to update subscription status', err);
+    }
   }
 
   const columns = [
@@ -236,9 +261,9 @@ export default function AdminUsers() {
                         }
                       />
                       <select
-                        onChange={(e) => handleStatusChange(e.target.value)}
+                        onChange={(e) => handleStatusChange(selectedId!, e.target.value)}
                         className="rounded border border-border bg-bg px-2 py-1 text-xs text-ink"
-                        value={selectedUser.status}
+                        defaultValue={selectedUser.status}
                       >
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>

@@ -329,6 +329,15 @@ exports.getDrawParticipants = async (req, res, next) => {
 // CHARITY MANAGEMENT (Admin CRUD)
 // ══════════════════════════════════════════════════════════════════════════════
 
+exports.getAllCharities = async (req, res, next) => {
+  try {
+    const charities = await Charity.find().sort({ createdAt: -1 }).lean();
+    res.json({ success: true, data: { charities } });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.createCharity = async (req, res, next) => {
   try {
     const charity = await Charity.create(req.body);

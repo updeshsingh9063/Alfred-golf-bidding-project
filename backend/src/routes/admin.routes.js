@@ -18,13 +18,14 @@ router.patch('/users/:id/scores/:scoreId', adminController.updateUserScore);
 
 // ── Draw Management ───────────────────────────────────────────────────────────
 router.get('/draws', adminController.getAllDraws);
+router.get('/draws/participants', adminController.getDrawParticipants); // must be before /:id
 router.post('/draws', adminController.createDraw);
 router.patch('/draws/:id', adminController.updateDraw);
 router.post('/draws/:id/simulate', adminController.simulateDraw);
 router.post('/draws/:id/publish', adminController.publishDraw);
-router.get('/draws/participants', adminController.getDrawParticipants);
 
 // ── Charity Management ────────────────────────────────────────────────────────
+router.get('/charities', adminController.getAllCharities);
 router.post('/charities', adminController.createCharity);
 router.patch('/charities/:id', adminController.updateCharity);
 router.delete('/charities/:id', adminController.deleteCharity);

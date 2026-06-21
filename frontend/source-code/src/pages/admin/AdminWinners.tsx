@@ -34,11 +34,11 @@ const statusVariant: Record<string, "success" | "warning" | "danger" | "default"
 export default function AdminWinners() {
   const { data, loading, refetch } = useAdminWinners(1, 50);
 
-  async function updateStatus(id: string, status: string) {
+  async function updateStatus(id: string, action: 'approve' | 'reject' | 'pay', extra?: Record<string, string>) {
     try {
       await fetchApi(`/admin/winners/${id}/verify`, {
         method: "PATCH",
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ action, ...extra })
       });
       refetch();
     } catch (e) {
@@ -47,11 +47,11 @@ export default function AdminWinners() {
   }
 
   async function togglePayout(id: string, currentStatus: string) {
-    const newStatus = currentStatus === "paid" ? "approved" : "paid";
+    const action = currentStatus === "paid" ? "approve" : "pay";
     try {
       await fetchApi(`/admin/winners/${id}/verify`, {
         method: "PATCH",
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ action })
       });
       refetch();
     } catch (e) {
@@ -65,8 +65,8 @@ export default function AdminWinners() {
 
   const winners = data?.winners?.map((w: any) => ({
     id: w._id,
-    userName: w.user?.name || `${w.user?.firstName || ''} ${w.user?.lastName || ''}`.trim() || 'Unknown User',
-    drawName: w.draw?.name || 'Unknown Draw',
+    userName: w.userName || 'Unknown User',
+    drawName: w.drawName || (w.drawId?.name) || 'Unknown Draw',
     tier: w.tier || 0,
     prize: w.prize || 0,
     status: w.status || 'pending',
@@ -152,14 +152,14 @@ export default function AdminWinners() {
                     {winner.status === "pending" && (
                       <div className="flex gap-2">
                         <button
-                          onClick={() => updateStatus(winner.id, "approved")}
+                          onClick={() => updateStatus(winner.id, "approve")}
                           className="inline-flex items-center gap-1 rounded-lg bg-success px-3 py-1.5 text-xs font-medium text-white hover:bg-success/90"
                         >
                           <CheckCircle2 size={12} />
                           Approve
                         </button>
                         <button
-                          onClick={() => updateStatus(winner.id, "rejected")}
+                          onClick={() => updateStatus(winner.id, "reject")}
                           className="inline-flex items-center gap-1 rounded-lg bg-danger px-3 py-1.5 text-xs font-medium text-white hover:bg-danger/90"
                         >
                           <XCircle size={12} />
