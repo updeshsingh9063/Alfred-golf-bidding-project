@@ -20,8 +20,8 @@ const { notFound } = require('./middleware/notFound.middleware');
 
 const app = express();
 
-// Trust proxy for rate limiting on Render/Heroku
-app.set('trust proxy', true);
+// Trust proxy for rate limiting on Render/Heroku (Render uses 1 proxy)
+app.set('trust proxy', 1);
 
 // ── Security headers ──────────────────────────────────────────────────────────
 app.use(helmet());
@@ -65,12 +65,14 @@ const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200,
   message: { success: false, message: 'Too many requests. Please try again later.' },
+  validate: { xForwardedForHeader: false, trustProxy: false },
 });
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: { success: false, message: 'Too many authentication attempts. Please try again in 15 minutes.' },
+  validate: { xForwardedForHeader: false, trustProxy: false },
 });
 
 app.use('/api/', apiLimiter);
