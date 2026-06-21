@@ -12,6 +12,7 @@ router.use(protect);
 router.get('/my', subscriptionController.getMySubscription);
 router.post('/create', subscriptionController.createSubscription);
 router.post('/cancel', subscriptionController.cancelSubscription);
+router.post('/upgrade', subscriptionController.upgradeSubscription);
 router.post('/create-checkout', subscriptionController.createCheckoutSession);
 router.get('/billing', subscriptionController.getBillingHistory);
 

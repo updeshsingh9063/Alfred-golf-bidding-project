@@ -153,6 +153,57 @@ exports.cancelSubscription = async (req, res, next) => {
   }
 };
 
+// ── POST /api/subscriptions/upgrade ──────────────────────────────────────────
+exports.upgradeSubscription = async (req, res, next) => {
+  try {
+    const { plan } = req.body;
+    if (!['monthly', 'yearly'].includes(plan)) {
+      return res.status(400).json({ success: false, message: 'Invalid plan.' });
+    }
+
+    const subscription = await Subscription.findOne({
+      userId: req.user._id,
+      status: 'active',
+    });
+
+    if (!subscription) {
+      return res.status(404).json({ success: false, message: 'No active subscription to change.' });
+    }
+
+    if (subscription.plan === plan) {
+      return res.status(400).json({ success: false, message: 'You are already on this plan.' });
+    }
+
+    const amount = plan === 'monthly' ? MONTHLY_PRICE : YEARLY_PRICE;
+    
+    // Update subscription
+    subscription.plan = plan;
+    subscription.amount = amount;
+    
+    subscription.billingHistory.push({
+      date: new Date(),
+      amount,
+      status: 'paid',
+      description: `Plan changed to ${plan === 'monthly' ? 'Monthly' : 'Yearly'}`,
+    });
+    
+    await subscription.save();
+
+    await User.findByIdAndUpdate(req.user._id, {
+      'subscription.plan': plan,
+      'subscription.amount': amount,
+    });
+
+    res.json({
+      success: true,
+      message: `Subscription changed to ${plan} plan.`,
+      data: { subscription },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ── POST /api/subscriptions/create-checkout ───────────────────────────────────
 // Stripe Checkout Session creation
 exports.createCheckoutSession = async (req, res, next) => {

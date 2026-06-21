@@ -78,6 +78,34 @@ export default function SettingsPage() {
     }
   }
 
+  async function handleCancel() {
+    if (!confirm("Are you sure you want to cancel your subscription?")) return;
+    try {
+      await fetchApi('/subscriptions/cancel', { method: 'POST' });
+      await refetch();
+      await refreshUser();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to cancel subscription.");
+    }
+  }
+
+  async function handleUpgrade() {
+    const newPlan = subscription?.plan === "monthly" ? "yearly" : "monthly";
+    if (!confirm(`Are you sure you want to change your plan to ${newPlan}?`)) return;
+    try {
+      await fetchApi('/subscriptions/upgrade', {
+        method: 'POST',
+        body: JSON.stringify({ plan: newPlan })
+      });
+      await refetch();
+      await refreshUser();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to change subscription plan.");
+    }
+  }
+
   return (
     <div className="flex min-h-screen bg-bg">
       <SidebarNav
@@ -182,12 +210,22 @@ export default function SettingsPage() {
                 )}
               </div>
               <div className="flex gap-2">
-                <button className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-surface-sunken">
-                  Upgrade
-                </button>
-                <button className="rounded-lg border border-danger/30 px-4 py-2 text-sm font-medium text-danger hover:bg-danger/5">
-                  Cancel
-                </button>
+                {subscription?.status === 'active' && (
+                  <>
+                    {subscription?.plan === 'monthly' ? (
+                      <button onClick={handleUpgrade} className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-surface-sunken">
+                        Upgrade
+                      </button>
+                    ) : (
+                      <button onClick={handleUpgrade} className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-surface-sunken">
+                        Downgrade
+                      </button>
+                    )}
+                    <button onClick={handleCancel} className="rounded-lg border border-danger/30 px-4 py-2 text-sm font-medium text-danger hover:bg-danger/5">
+                      Cancel
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </section>
