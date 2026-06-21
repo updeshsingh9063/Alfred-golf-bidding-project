@@ -47,6 +47,7 @@ const charitySchema = new mongoose.Schema(
     },
     logoUrl: String,
     bannerUrl: String,
+    imageUrl: String,
     images: [String],
     website: String,
     registrationNumber: String,

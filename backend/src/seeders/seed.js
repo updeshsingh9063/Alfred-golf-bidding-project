@@ -22,6 +22,7 @@ const charities = [
   {
     name: 'Ocean Conservancy Trust',
     slug: 'ocean-conservancy-trust',
+    imageUrl: 'https://images.unsplash.com/photo-1583212272226-b7c5e687c1b6?w=800&q=80&auto=format&fit=crop',
     description: 'We protect the ocean by cleaning coastlines, fighting plastic pollution, and advocating for marine life. Every contribution goes directly toward beach clean-ups, education programmes, and lobbying for cleaner seas.',
     shortDescription: 'Protecting our oceans one beach at a time.',
     category: 'environment',
@@ -43,6 +44,7 @@ const charities = [
   {
     name: 'Youth Links Foundation',
     slug: 'youth-links-foundation',
+    imageUrl: 'https://images.unsplash.com/photo-1529390079861-591de45a3b09?w=800&q=80&auto=format&fit=crop',
     description: 'Youth Links Foundation brings golf into underserved communities, providing equipment, coaching, and mental health support to young people aged 8–18. We believe sport changes lives.',
     shortDescription: 'Bringing golf to young people everywhere.',
     category: 'youth',
@@ -56,6 +58,7 @@ const charities = [
   {
     name: 'Hearts & Hands Medical',
     slug: 'hearts-and-hands-medical',
+    imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80&auto=format&fit=crop',
     description: 'Hearts & Hands Medical delivers critical healthcare to remote communities across sub-Saharan Africa and South Asia. From mobile clinics to emergency surgery funds, your contribution directly saves lives.',
     shortDescription: 'Life-saving healthcare where it is needed most.',
     category: 'medical',
@@ -69,6 +72,7 @@ const charities = [
   {
     name: 'Green Canopy Project',
     slug: 'green-canopy-project',
+    imageUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80&auto=format&fit=crop',
     description: 'The Green Canopy Project plants trees in deforested regions around the world, working with local communities to restore ecosystems and fight climate change. Over 500,000 trees planted so far.',
     shortDescription: 'Replanting forests, restoring ecosystems.',
     category: 'environment',
@@ -82,6 +86,7 @@ const charities = [
   {
     name: 'Safe Harbour Rescue',
     slug: 'safe-harbour-rescue',
+    imageUrl: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&q=80&auto=format&fit=crop',
     description: 'Safe Harbour Rescue provides emergency shelter, legal aid, and resettlement support to refugees and asylum seekers arriving in the UK. We believe everyone deserves safety and dignity.',
     shortDescription: 'Rapid disaster relief and rebuilding.',
     category: 'humanitarian',
@@ -95,6 +100,7 @@ const charities = [
   {
     name: 'Paws & Peace Shelter',
     slug: 'paws-and-peace-shelter',
+    imageUrl: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=80&auto=format&fit=crop',
     description: 'Paws & Peace Shelter rescues abandoned and abused animals, providing veterinary care, rehabilitation, and rehoming services. We advocate for stricter animal welfare laws and responsible pet ownership.',
     shortDescription: 'Rescuing and rehoming animals in need.',
     category: 'animal-welfare',
